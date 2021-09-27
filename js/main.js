@@ -1,32 +1,20 @@
-const getRandomNumber = (min, max) => {
+const getRandomFloat = (min, max, precision) => {
   if (min > max) {
     const swap = min;
     min = max;
     max = swap;
   }
 
-  const result = min + Math.random() * (max - min);
-  return result;
-};
-
-const getRandomIntNumber = (min, max) => {
-  const number = getRandomNumber(min, max + 1);
-  const roundedNumber = Math.floor(number);
-  return roundedNumber;
-};
-
-const getRandomAnyNumber = (min, max, signsAfterComma = 0) => {
   let numIncludeToRange;
-  signsAfterComma === 0
+  precision === 0
     ? (numIncludeToRange = 1)
-    : (numIncludeToRange = 1 / 10 ** signsAfterComma);
+    : (numIncludeToRange = 1 / 10 ** precision);
 
-  const number = getRandomNumber(min, max + numIncludeToRange);
-
-  const roundedNumber = (Math.floor(number * 10 ** signsAfterComma)) / 10 ** signsAfterComma;
-
-  return roundedNumber;
+  const num = min + Math.random() * (max + numIncludeToRange - min);
+  return Math.floor(num * 10 ** precision) / 10 ** precision;
 };
 
-getRandomIntNumber(10, 40);
-getRandomAnyNumber(5, 10, 3);
+const getRandomIntNumber = (min, max) => getRandomFloat(min, max, 0);
+
+getRandomFloat(1, 10, 2);
+getRandomIntNumber (20, 40);
