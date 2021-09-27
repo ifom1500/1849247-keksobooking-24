@@ -5,11 +5,7 @@ const getRandomFloat = (min, max, precision) => {
     max = swap;
   }
 
-  let numIncludeToRange;
-  precision === 0
-    ? (numIncludeToRange = 1)
-    : (numIncludeToRange = 1 / 10 ** precision);
-
+  const numIncludeToRange = (precision === 0) ? 1 : (1 / 10 ** precision);
   const num = min + Math.random() * (max + numIncludeToRange - min);
   return Math.floor(num * 10 ** precision) / 10 ** precision;
 };
