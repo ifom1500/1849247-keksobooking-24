@@ -34,11 +34,8 @@ const getRandomPositiveInteger = (a, b) => {
 };
 
 const createCounter = () => {
-  let i = 0;
-  return function() {
-    i = i + 1;
-    return i;
-  };
+  let i = 1;
+  return () => i++;
 };
 
 const counter = createCounter();
