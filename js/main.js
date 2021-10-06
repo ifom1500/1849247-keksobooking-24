@@ -1,5 +1,3 @@
-'use strict';
-
 const APARTMENT_TYPES = ['palace', 'flat', 'house', 'bungalow', 'hotel'];
 
 const WORKING_HOURS = ['12:00', '13:00', '14:00'];
@@ -36,10 +34,10 @@ const getRandomPositiveInteger = (a, b) => {
 };
 
 const createCounter = () => {
-  let counter = 0;
+  let i = 0;
   return function() {
-    counter = counter + 1;
-    return counter;
+    i = i + 1;
+    return i;
   };
 };
 
@@ -54,8 +52,8 @@ const getRandomArrayWithoutRepeats = (array) => {
 
   for (let i = 0; i < newArray.length; i++) {
     const index = getRandomPositiveInteger(0, clone.length - 1);
-    const item = clone.splice(index, 1).join();
-    newArray[i] = item;
+    const item = clone.splice(index, 1);
+    newArray[i] = item.join();
   }
   return newArray;
 };
@@ -65,8 +63,7 @@ const getRandomArrayWithRepeats = (array, maxQuantity) => {
   newArray.length = getRandomPositiveInteger(0, maxQuantity);
 
   for (let i = 0; i < newArray.length; i++) {
-    const item = array[getRandomPositiveInteger(0, array.length - 1)];
-    newArray[i] = item;
+    newArray[i] = array[getRandomPositiveInteger(0, array.length - 1)];
   }
   return newArray;
 };
@@ -100,3 +97,6 @@ const createApartmentAd = () => {
 };
 
 const similarAds = Array.from({ length: SIMILAR_AD_COUNT }, createApartmentAd);
+
+const doAction = (array) => array; // Чтобы ESLint не выдавал ошибку, позже удалю
+doAction(similarAds);
