@@ -1,5 +1,42 @@
-import { getRandomPositiveFloat, getRandomPositiveInteger, createCounter } from './util.js';
-import { APARTMENT_TYPES, WORKING_HOURS, FEATURES, PHOTOS, SIMILAR_AD_COUNT } from './data.js';
+const APARTMENT_TYPES = ['palace', 'flat', 'house', 'bungalow', 'hotel'];
+
+const WORKING_HOURS = ['12:00', '13:00', '14:00'];
+
+const FEATURES = [
+  'wifi',
+  'dishwasher',
+  'parking',
+  'washer',
+  'elevator',
+  'conditioner',
+];
+
+const PHOTOS = [
+  'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/duonguyen-8LrGtIxxa4w.jpg',
+  'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/brandon-hoogenboom-SNxQGWxZQi0.jpg',
+  'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/claire-rendall-b6kAwr1i0Iw.jpg',
+];
+
+const SIMILAR_AD_COUNT = 10;
+
+const getRandomPositiveFloat = (a, b, precision) => {
+  const min = Math.min(Math.abs(a), Math.abs(b));
+  const max = Math.max(Math.abs(a), Math.abs(b));
+  const result = Math.random() * (max - min) + min;
+  return +result.toFixed(precision);
+};
+
+const getRandomPositiveInteger = (a, b) => {
+  const min = Math.ceil(Math.min(Math.abs(a), Math.abs(b)));
+  const max = Math.floor(Math.max(Math.abs(a), Math.abs(b)));
+  const result = Math.random() * (max - min + 1) + min;
+  return Math.floor(result);
+};
+
+const createCounter = () => {
+  let i = 1;
+  return () => i++;
+};
 
 const counter = createCounter();
 
@@ -56,8 +93,6 @@ const createApartmentAd = () => {
   };
 };
 
-const similarAds = Array.from({ length: SIMILAR_AD_COUNT }, createApartmentAd);
+const createSimilarAds = () => Array.from({ length: SIMILAR_AD_COUNT }, createApartmentAd);
 
-const doAction = (array) => array; // Чтобы ESLint не выдавал ошибку, позже удалю
-
-export { similarAds, doAction};
+export { createSimilarAds };
