@@ -1,6 +1,9 @@
-import { createSimilarAds } from './mock-data.js';
+import { createSimilarAdsData } from './mock-data.js';
+import { createListOfSimilarAdCards } from './card.js';
+import { renderAdCardOnCanvas } from './map.js';
 
-const similarAds = createSimilarAds();
+const similarAdsData = createSimilarAdsData();
 
-const doAction = (array) => array; // Для предотвращения ошибок ESLint
-doAction(similarAds);
+const listOfSimilarAdCards = createListOfSimilarAdCards(similarAdsData);
+
+renderAdCardOnCanvas(listOfSimilarAdCards.children[5]);
