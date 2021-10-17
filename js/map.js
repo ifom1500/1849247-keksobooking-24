@@ -1,5 +1,5 @@
 const mapCanvas = document.querySelector('#map-canvas');
 
-const renderAdCardOnCanvas = (child) => mapCanvas.append(child);
+const renderCard = (child) => mapCanvas.append(child);
 
-export { renderAdCardOnCanvas };
+export { renderCard };

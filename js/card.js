@@ -1,10 +1,8 @@
-import { NounFormsMap, getNounDeclension } from './util.js';
-
 const cardTemplate = document.querySelector('#card')
   .content
   .querySelector('.popup');
 
-const typeTranslationMap = {
+const TypeTranslation = {
   flat: 'Квартира',
   bungalow: 'Бунгало',
   house: 'Дом',
@@ -12,10 +10,18 @@ const typeTranslationMap = {
   hotel: 'Отель',
 };
 
-const createListOfSimilarAdCards = (adDataArray) => {
+const addContentToElement = (element, content) => {
+  if (element) {
+    element.textContent = content;
+  } else {
+    element.remove();
+  }
+};
+
+const createCards = (dataArray) => {
   const fragmentOfSimilarAdCards = document.createDocumentFragment();
 
-  adDataArray.forEach((ad) => {
+  dataArray.forEach((ad) => {
     const card = cardTemplate.cloneNode(true);
 
     const { author: { avatar }, offer: { title, address, price, type, rooms, guests, checkin, checkout, features, description, photos } } = ad;
@@ -37,17 +43,9 @@ const createListOfSimilarAdCards = (adDataArray) => {
       cardAvatar.remove();
     }
 
-    if (title) {
-      cardTitle.textContent = title;
-    } else {
-      cardTitle.remove();
-    }
+    addContentToElement(cardTitle, title);
 
-    if (address) {
-      cardAddress.textContent = address;
-    } else {
-      cardAddress.remove();
-    }
+    addContentToElement(cardAddress, address);
 
     if (price) {
       cardPrice.textContent = `${price} ₽/ночь`;
@@ -55,28 +53,16 @@ const createListOfSimilarAdCards = (adDataArray) => {
       cardPrice.remove();
     }
 
-    if (type) {
-      cardType.textContent = typeTranslationMap[type];
-    } else {
-      cardType.remove();
-    }
+    addContentToElement(cardType, TypeTranslation[type]);
 
     if (rooms && guests) {
-      cardCapacity.textContent = `${rooms} ${getNounDeclension(rooms, NounFormsMap.rooms)} для ${guests} ${getNounDeclension(guests, NounFormsMap.guests)}`;
-    } else if (!rooms && guests) {
-      cardCapacity.textContent = `Просторное жилье для ${guests} ${getNounDeclension(guests, NounFormsMap.guests)}`;
-    } else if (rooms && !guests) {
-      cardCapacity.textContent = `${rooms} ${getNounDeclension(rooms, NounFormsMap.rooms)} для одного или нескольких гостей`;
+      cardCapacity.textContent = `${rooms} комнаты для ${guests} гостей`;
     } else {
       cardCapacity.remove();
     }
 
     if (checkin && checkout) {
       cardTime.textContent = `Заезд после ${checkin}, выезд до ${checkout}`;
-    } else if (!checkin && checkout) {
-      cardTime.textContent = `Выезд до ${checkout}, время заезда - по договоренности`;
-    } else if (checkin && !checkout) {
-      cardTime.textContent = `Заезд после ${checkin}, время выезда - по договоренности`;
     } else {
       cardTime.remove();
     }
@@ -125,6 +111,6 @@ const createListOfSimilarAdCards = (adDataArray) => {
   return fragmentOfSimilarAdCards;
 };
 
-export { createListOfSimilarAdCards };
+export { createCards };
 
 

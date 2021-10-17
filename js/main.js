@@ -1,9 +1,10 @@
-import { createSimilarAdsData } from './mock-data.js';
-import { createListOfSimilarAdCards } from './card.js';
-import { renderAdCardOnCanvas } from './map.js';
+import { generateAdverts } from './mock-data.js';
+import { createCards } from './card.js';
+import { renderCard } from './map.js';
 
-const similarAdsData = createSimilarAdsData();
+const adverts = generateAdverts();
 
-const listOfSimilarAdCards = createListOfSimilarAdCards(similarAdsData);
+const cards = createCards(adverts);
+console.log(cards);
 
-renderAdCardOnCanvas(listOfSimilarAdCards.children[5]);
+renderCard(cards.children[5]);

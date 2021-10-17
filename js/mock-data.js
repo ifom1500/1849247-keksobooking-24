@@ -65,7 +65,7 @@ const getRandomArrayWithRepeats = (array, maxQuantity) => {
   return newArray;
 };
 
-const createApartmentAdData = () => {
+const generateAdvert = () => {
   const lat = getRandomPositiveFloat(35.65, 35.7, 5);
   const lng = getRandomPositiveFloat(139.7, 139.8, 5);
 
@@ -93,6 +93,6 @@ const createApartmentAdData = () => {
   };
 };
 
-const createSimilarAdsData = () => Array.from({ length: SIMILAR_AD_COUNT }, createApartmentAdData);
+const generateAdverts = () => Array.from({ length: SIMILAR_AD_COUNT }, generateAdvert);
 
-export { createSimilarAdsData };
+export { generateAdverts };
