@@ -1,6 +1,9 @@
-import { createSimilarAds } from './mock-data.js';
+import { generateAdverts } from './mock-data.js';
+import { createCards } from './card.js';
+import { renderCard } from './map.js';
 
-const similarAds = createSimilarAds();
+const adverts = generateAdverts();
 
-const doAction = (array) => array; // Для предотвращения ошибок ESLint
-doAction(similarAds);
+const cards = createCards(adverts);
+
+renderCard(cards.children[5]);
