@@ -13,4 +13,4 @@ const adverts = generateAdverts();
 const cards = createCards(adverts);
 renderCard(cards.children[5]);
 
-setPageEnabled(false);
+setPageEnabled(true);
