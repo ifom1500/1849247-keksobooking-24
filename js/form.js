@@ -10,7 +10,17 @@ const adForm = document.querySelector('.ad-form');
 const titleInput = adForm.querySelector('#title');
 const roomSelect = adForm.querySelector('#room_number');
 const priceInput = adForm.querySelector('#price');
-const capacitySelect = document.querySelector('#capacity');
+const capacitySelect = adForm.querySelector('#capacity');
+const typeSelect = adForm.querySelector('#type');
+const timeFieldset = adForm.querySelector('.ad-form__element--time');
+
+const MinPrices = {
+  bungalow: 0,
+  flat: 1000,
+  hotel: 3000,
+  house: 5000,
+  palace: 10000,
+};
 
 const setAdFormEnabled = (enabled) => setFormEnabled(adForm, enabled, AD_FORM_DISABLED);
 
@@ -21,7 +31,7 @@ const onTitleInputChange = (evt) => {
   if (valueLength < MIN_TITLE_LENGTH) {
     input.setCustomValidity(`Введите еще ${MIN_TITLE_LENGTH - valueLength} символов`);
   } else if (valueLength > MAX_TITLE_LENGTH) {
-    input.setCustomValidity(`Удалите лишние ${valueLength - MAX_TITLE_LENGTH} символы`);
+    input.setCustomValidity(`Удалите лишние ${valueLength - MAX_TITLE_LENGTH} символов`);
   } else {
     input.setCustomValidity('');
   }
@@ -66,11 +76,33 @@ const onRoomSelectChange = (evt) => {
   syncRoomCapacity(currentRoomValue);
 };
 
+const getMinPrice = (currentValue) => {
+  for (const type in MinPrices) {
+    if (currentValue === type) {
+      return MinPrices[type];
+    }
+  }
+};
+
+const setMinPrice = (currentValue) => {
+  const minPrice = getMinPrice(currentValue);
+  priceInput.setAttribute('min', minPrice);
+  priceInput.setAttribute('placeholder', `от ${minPrice} руб.`);
+};
+
+const onTypeSelectChange = (evt) => {
+  const currentTypeValue = evt.target.value;
+  setMinPrice(currentTypeValue);
+};
+
 const onPriceInputChange = (evt) => {
+  const minPrice = getMinPrice(typeSelect.value);
   const input = evt.target;
 
   if (input.value > MAX_PRICE_VALUE) {
     input.setCustomValidity('Превышена максимальная цена за жилье');
+  } else if (input.value < minPrice) {
+    input.setCustomValidity(`Минимальная цена за данный тип жилья - ${minPrice} руб.`);
   } else {
     input.setCustomValidity('');
   }
@@ -78,8 +110,20 @@ const onPriceInputChange = (evt) => {
   input.reportValidity();
 };
 
+const onTimeFieldsetChange = (evt) => {
+  const currentValue = evt.target.value;
+
+  if (evt.target.matches('#timein')) {
+    evt.target.nextElementSibling.value = currentValue;
+  } else {
+    evt.target.previousElementSibling.value = currentValue;
+  }
+};
+
 titleInput.addEventListener('input', onTitleInputChange);
 roomSelect.addEventListener('change', onRoomSelectChange);
 priceInput.addEventListener('input', onPriceInputChange);
+typeSelect.addEventListener('change', onTypeSelectChange);
+timeFieldset.addEventListener('change', onTimeFieldsetChange);
 
 export {setAdFormEnabled};
