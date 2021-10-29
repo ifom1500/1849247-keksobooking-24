@@ -84,10 +84,9 @@ const getMinPrice = (currentValue) => {
   }
 };
 
-const setMinPrice = (currentValue) => {
-  const minPrice = getMinPrice(currentValue);
+const setMinPrice = (offerType) => {
+  const minPrice = getMinPrice(offerType);
   priceInput.setAttribute('min', minPrice);
-  priceInput.setAttribute('placeholder', `от ${minPrice} руб.`);
 };
 
 const onTypeSelectChange = (evt) => {
@@ -112,12 +111,10 @@ const onPriceInputChange = (evt) => {
 
 const onTimeFieldsetChange = (evt) => {
   const currentValue = evt.target.value;
-
-  if (evt.target.matches('#timein')) {
-    evt.target.nextElementSibling.value = currentValue;
-  } else {
-    evt.target.previousElementSibling.value = currentValue;
-  }
+  const selects = timeFieldset.querySelectorAll('select');
+  selects.forEach((select) => {
+    select.value = currentValue;
+  });
 };
 
 titleInput.addEventListener('input', onTitleInputChange);
