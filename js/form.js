@@ -13,6 +13,7 @@ const priceInput = adForm.querySelector('#price');
 const capacitySelect = adForm.querySelector('#capacity');
 const typeSelect = adForm.querySelector('#type');
 const timeFieldset = adForm.querySelector('.ad-form__element--time');
+const addressInput = adForm.querySelector('#address');
 
 const MinPrices = {
   bungalow: 0,
@@ -123,4 +124,8 @@ priceInput.addEventListener('input', onPriceInputChange);
 typeSelect.addEventListener('change', onTypeSelectChange);
 timeFieldset.addEventListener('change', onTimeFieldsetChange);
 
-export {setAdFormEnabled};
+const setAddressInputValue = (value) => {
+  addressInput.value = value;
+};
+
+export {setAdFormEnabled, setAddressInputValue};
