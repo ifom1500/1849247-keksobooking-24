@@ -6,6 +6,14 @@ const MAX_TITLE_LENGTH = 100;
 const HUNDRED_ROOMS_VALUE = '100';
 const MAX_PRICE_VALUE = 1000000;
 
+const MinPrices = {
+  bungalow: 0,
+  flat: 1000,
+  hotel: 3000,
+  house: 5000,
+  palace: 10000,
+};
+
 const adForm = document.querySelector('.ad-form');
 const titleInput = adForm.querySelector('#title');
 const roomSelect = adForm.querySelector('#room_number');
@@ -14,14 +22,8 @@ const capacitySelect = adForm.querySelector('#capacity');
 const typeSelect = adForm.querySelector('#type');
 const timeFieldset = adForm.querySelector('.ad-form__element--time');
 const addressInput = adForm.querySelector('#address');
-
-const MinPrices = {
-  bungalow: 0,
-  flat: 1000,
-  hotel: 3000,
-  house: 5000,
-  palace: 10000,
-};
+const timeInInput = adForm.querySelector('#timein');
+const timeOutInput = adForm.querySelector('#timeout');
 
 const setAdFormEnabled = (enabled) => setFormEnabled(adForm, enabled, AD_FORM_DISABLED);
 
@@ -40,11 +42,6 @@ const onTitleInputChange = (evt) => {
   input.reportValidity();
 };
 
-const syncDisabledHiddenProp = (item, boolean) => {
-  item.disabled = boolean;
-  item.hidden = boolean;
-};
-
 const syncRoomCapacity = (value) => {
   const currentValue = value;
   const capacities = capacitySelect.children;
@@ -58,24 +55,21 @@ const syncRoomCapacity = (value) => {
     }
 
     if (currentValue === HUNDRED_ROOMS_VALUE) {
-      syncDisabledHiddenProp(capacities[i], true);
-      syncDisabledHiddenProp(capacityNoGuests, false);
+      capacities[i].disabled = true;
+      capacityNoGuests.disabled = true;
       capacityNoGuests.selected = true;
     } else if (capacities[i].value <= currentValue) {
-      syncDisabledHiddenProp(capacities[i], false);
-      syncDisabledHiddenProp(capacityNoGuests, true);
+      capacities[i].disabled = false;
+      capacityNoGuests.disabled = true;
       currentCapacity.selected = true;
     } else {
-      syncDisabledHiddenProp(capacities[i], true);
-      syncDisabledHiddenProp(capacityNoGuests, true);
+      capacities[i].disabled = true;
+      capacityNoGuests.disabled = true;
     }
   }
 };
 
-const onRoomSelectChange = (evt) => {
-  const currentRoomValue = evt.target.value;
-  syncRoomCapacity(currentRoomValue);
-};
+const onRoomSelectChange = (evt) => syncRoomCapacity(evt.target.value);
 
 const getMinPrice = (currentValue) => {
   for (const type in MinPrices) {
@@ -111,11 +105,9 @@ const onPriceInputChange = (evt) => {
 };
 
 const onTimeFieldsetChange = (evt) => {
-  const currentValue = evt.target.value;
-  const selects = timeFieldset.querySelectorAll('select');
-  selects.forEach((select) => {
-    select.value = currentValue;
-  });
+  const newValue = evt.target.value;
+  timeInInput.value = newValue;
+  timeOutInput.value = newValue;
 };
 
 titleInput.addEventListener('input', onTitleInputChange);

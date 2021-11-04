@@ -9,8 +9,6 @@ const setPageEnabled = (enabled) => {
   setMapFormEnabled(enabled);
 };
 
-initMap(setPageEnabled(true));
-const adverts = generateAdverts();
-renderOffers(adverts, createCard);
+initMap(() => setPageEnabled(true));
 
-
+renderOffers(generateAdverts(), createCard);
