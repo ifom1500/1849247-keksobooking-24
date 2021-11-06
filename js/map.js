@@ -3,7 +3,7 @@ import {setAddressInputValue} from './form.js';
 
 const AD_FORM_DISABLED = 'map__filters--disabled';
 const TOKYO_COORDINATES = {lat: 35.67500, lng: 139.75000};
-const ZOOM = 14;
+const ZOOM = 13;
 
 const mapFilterForm = document.querySelector('.map__filters');
 const mapCanvas = document.querySelector('#map-canvas');
@@ -11,31 +11,34 @@ const mapCanvas = document.querySelector('#map-canvas');
 const map = L.map(mapCanvas);
 const layerGroup = L.layerGroup();
 
+
 const mainPinIcon = L.icon({
   iconUrl: './img/main-pin.svg',
-  iconSize: [60, 60],
-  iconAnchor: [30, 60],
+  iconSize: [52, 52],
+  iconAnchor: [26, 52],
 });
 
 const pinIcon = L.icon({
   iconUrl: './img/pin.svg',
-  iconSize: [50, 50],
-  iconAnchor: [25, 50],
+  iconSize: [40, 40],
+  iconAnchor: [20, 40],
 });
+
+const mainPin = L.marker(
+  {
+    lat: TOKYO_COORDINATES.lat,
+    lng: TOKYO_COORDINATES.lng,
+  },
+  {
+    draggable: true,
+    icon: mainPinIcon,
+  },
+);
 
 const initMap = (onMapLoad) => {
   layerGroup.addTo(map);
 
-  const mainPin = L.marker(
-    {
-      lat: TOKYO_COORDINATES.lat,
-      lng: TOKYO_COORDINATES.lng,
-    },
-    {
-      draggable: true,
-      icon: mainPinIcon,
-    },
-  ).addTo(map);
+  mainPin.addTo(map);
 
   mainPin.on('moveend', (evt) => {
     setAddressInputValue(`${evt.target.getLatLng().lat.toFixed(5)}, ${evt.target.getLatLng().lng.toFixed(5)}`);
@@ -69,4 +72,13 @@ const renderOffers = (offers, createPopup) => {
       .bindPopup(createPopup(offer)));
 };
 
-export {initMap, setMapFormEnabled, renderOffers};
+const resetAddressPin = () => {
+  mainPin.setLatLng(TOKYO_COORDINATES);
+  map.setView(TOKYO_COORDINATES, ZOOM);
+};
+
+const closeAddressPopup = () => {
+  map.closePopup();
+};
+
+export {initMap, setMapFormEnabled, renderOffers, resetAddressPin, closeAddressPopup};

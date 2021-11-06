@@ -1,4 +1,7 @@
 import {setFormEnabled} from './utils.js';
+import {sendData} from './api.js';
+import {resetAddressPin, closeAddressPopup} from './map.js';
+import {renderSuccessPopup, renderErrorPopup} from './popup.js';
 
 const AD_FORM_DISABLED = 'ad-form--disabled';
 const MIN_TITLE_LENGTH = 30;
@@ -110,14 +113,54 @@ const onTimeFieldsetChange = (evt) => {
   timeOutInput.value = newValue;
 };
 
+const resetPage = () => {
+  resetAddressPin();
+  closeAddressPopup();
+  titleInput.value = '';
+  addressInput.value = '35.67500, 139.75000';
+  typeSelect.querySelector('option[value="flat"]').selected = true;
+  priceInput.value = null;
+  timeInInput.querySelector('option[value="12:00"]').selected = true;
+  timeOutInput.querySelector('option[value="12:00"]').selected = true;
+  roomSelect.querySelector('option[value="1"]').selected = true;
+  capacitySelect.querySelector('option[value="3"]').selected = true;
+  adForm.querySelector('#description').value = '';
+  adForm.querySelector('.features').querySelectorAll('input').forEach((input) => {
+    input.checked = false;
+  });
+};
+
+const onAdFormReset = (evt) => {
+  evt.preventDefault();
+  resetPage();
+};
+
 titleInput.addEventListener('input', onTitleInputChange);
 roomSelect.addEventListener('change', onRoomSelectChange);
 priceInput.addEventListener('input', onPriceInputChange);
 typeSelect.addEventListener('change', onTypeSelectChange);
 timeFieldset.addEventListener('change', onTimeFieldsetChange);
+adForm.addEventListener('reset', onAdFormReset);
 
 const setAddressInputValue = (value) => {
   addressInput.value = value;
 };
+
+const setAdFormSubmit = (onSuccess) => {
+  adForm.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+
+    sendData (
+      () => onSuccess(),
+      () => renderErrorPopup(),
+      new FormData(evt.target),
+    );
+  });
+};
+
+setAdFormSubmit(() => {
+  resetPage();
+  renderSuccessPopup();
+});
 
 export {setAdFormEnabled, setAddressInputValue};
