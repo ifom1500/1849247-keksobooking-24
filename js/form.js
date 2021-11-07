@@ -1,4 +1,7 @@
 import {setFormEnabled} from './utils.js';
+import {sendData} from './api.js';
+import {resetAddressPin, closeAddressPopup} from './map.js';
+import {renderSuccessPopup, renderErrorPopup} from './popup.js';
 
 const AD_FORM_DISABLED = 'ad-form--disabled';
 const MIN_TITLE_LENGTH = 30;
@@ -110,14 +113,37 @@ const onTimeFieldsetChange = (evt) => {
   timeOutInput.value = newValue;
 };
 
+const resetMap = () => {
+  resetAddressPin();
+  closeAddressPopup();
+};
+
+const onAdFormReset = () => {
+  resetMap();
+};
+
 titleInput.addEventListener('input', onTitleInputChange);
 roomSelect.addEventListener('change', onRoomSelectChange);
 priceInput.addEventListener('input', onPriceInputChange);
 typeSelect.addEventListener('change', onTypeSelectChange);
 timeFieldset.addEventListener('change', onTimeFieldsetChange);
+adForm.addEventListener('reset', onAdFormReset);
 
 const setAddressInputValue = (value) => {
   addressInput.value = value;
 };
+
+const setAdFormSubmit = (onSuccess) => {
+  adForm.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+
+    sendData (onSuccess, renderErrorPopup, new FormData(evt.target));
+  });
+};
+
+setAdFormSubmit(() => {
+  adForm.reset();
+  renderSuccessPopup();
+});
 
 export {setAdFormEnabled, setAddressInputValue};
