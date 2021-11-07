@@ -113,26 +113,13 @@ const onTimeFieldsetChange = (evt) => {
   timeOutInput.value = newValue;
 };
 
-const resetPage = () => {
+const resetMap = () => {
   resetAddressPin();
   closeAddressPopup();
-  titleInput.value = '';
-  addressInput.value = '35.67500, 139.75000';
-  typeSelect.querySelector('option[value="flat"]').selected = true;
-  priceInput.value = null;
-  timeInInput.querySelector('option[value="12:00"]').selected = true;
-  timeOutInput.querySelector('option[value="12:00"]').selected = true;
-  roomSelect.querySelector('option[value="1"]').selected = true;
-  capacitySelect.querySelector('option[value="3"]').selected = true;
-  adForm.querySelector('#description').value = '';
-  adForm.querySelector('.features').querySelectorAll('input').forEach((input) => {
-    input.checked = false;
-  });
 };
 
-const onAdFormReset = (evt) => {
-  evt.preventDefault();
-  resetPage();
+const onAdFormReset = () => {
+  resetMap();
 };
 
 titleInput.addEventListener('input', onTitleInputChange);
@@ -150,16 +137,12 @@ const setAdFormSubmit = (onSuccess) => {
   adForm.addEventListener('submit', (evt) => {
     evt.preventDefault();
 
-    sendData (
-      () => onSuccess(),
-      () => renderErrorPopup(),
-      new FormData(evt.target),
-    );
+    sendData (onSuccess, renderErrorPopup, new FormData(evt.target));
   });
 };
 
 setAdFormSubmit(() => {
-  resetPage();
+  adForm.reset();
   renderSuccessPopup();
 });
 

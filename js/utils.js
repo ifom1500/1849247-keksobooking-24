@@ -15,13 +15,25 @@ const setFormEnabled = (form, enabled, disabledClass) => {
 const isEscapeKey = (evt) => evt.key === 'Escape';
 
 const renderGetDataError = () => {
-  const mapCanvas = document.querySelector('#map-canvas');
-  mapCanvas.style.border = '10px solid crimson';
-  mapCanvas.style.fontSize = '35px';
-  mapCanvas.style.color = 'crimson';
-  mapCanvas.style.textAlign = 'center';
-  mapCanvas.style.paddingTop = '210px';
-  mapCanvas.textContent = 'Ошибка получения данных';
+  const getDataErrorPopup = document.createElement('div');
+  getDataErrorPopup.style.zIndex = '999';
+  getDataErrorPopup.style.position = 'absolute';
+  getDataErrorPopup.style.top = '200px';
+  getDataErrorPopup.style.left = '50%';
+  getDataErrorPopup.style.transform = 'translateX(-50%)';
+  getDataErrorPopup.style.width = 'auto';
+  getDataErrorPopup.style.padding = '100px 200px';
+  getDataErrorPopup.style.fontSize = '20px';
+  getDataErrorPopup.style.border = '5px solid red';
+  getDataErrorPopup.style.backgroundColor = 'white';
+
+  getDataErrorPopup.textContent = 'Ошибка получения данных! Перезагрузите страницу!';
+
+  document.body.append(getDataErrorPopup);
+
+  setTimeout(() => {
+    getDataErrorPopup.remove();
+  }, 3000);
 };
 
 export {setFormEnabled, isEscapeKey, renderGetDataError};

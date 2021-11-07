@@ -10,13 +10,10 @@ const setPageEnabled = (enabled) => {
   setMapFormEnabled(enabled);
 };
 
+initMap(() => setPageEnabled(true));
+
 const onSuccessGetData = (adverts) => {
-  initMap(() => setPageEnabled(true));
   renderOffers(adverts, createCard);
 };
 
-const onFailGetData = () => {
-  renderGetDataError();
-};
-
-getData(onSuccessGetData, onFailGetData);
+getData(onSuccessGetData, renderGetDataError);
