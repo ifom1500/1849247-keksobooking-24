@@ -1,5 +1,6 @@
 import {setFormEnabled} from './utils.js';
 import {setAddressInputValue} from './form.js';
+import {filterOffers} from './filter.js';
 
 const AD_FORM_DISABLED = 'map__filters--disabled';
 const TOKYO_COORDINATES = {lat: 35.67500, lng: 139.75000};
@@ -66,10 +67,15 @@ const createOfferMarker = (offer) => L.marker({
 });
 
 const renderOffers = (offers, createPopup) => {
-  offers.forEach((offer) =>
+  const newOffers = filterOffers(offers);
+
+  layerGroup.clearLayers();
+
+  newOffers.forEach((offer) => {
     createOfferMarker(offer)
       .addTo(layerGroup)
-      .bindPopup(createPopup(offer)));
+      .bindPopup(() => createPopup(offer));
+  });
 };
 
 const resetAddressPin = () => {

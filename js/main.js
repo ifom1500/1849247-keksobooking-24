@@ -3,7 +3,8 @@ import {initMap, renderOffers} from './map.js';
 import {setAdFormEnabled} from './form.js';
 import {setMapFormEnabled} from './map.js';
 import {getData} from './api.js';
-import {renderGetDataError} from './utils.js';
+import {debounce, renderGetDataError} from './utils.js';
+import {setMapFiltersChange} from './filter.js';
 
 const setPageEnabled = (enabled) => {
   setAdFormEnabled(enabled);
@@ -14,6 +15,8 @@ initMap(() => setPageEnabled(true));
 
 const onSuccessGetData = (adverts) => {
   renderOffers(adverts, createCard);
+  setMapFiltersChange(debounce(() => renderOffers(adverts), 500));
 };
 
 getData(onSuccessGetData, renderGetDataError);
+
