@@ -86,6 +86,7 @@ const getMinPrice = (currentValue) => {
 const setMinPrice = (offerType) => {
   const minPrice = getMinPrice(offerType);
   priceInput.setAttribute('min', minPrice);
+  priceInput.placeholder = minPrice;
 };
 
 const onTypeSelectChange = (evt) => {
