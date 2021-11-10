@@ -47,23 +47,6 @@ const isPriceSuitable = (advert) => {
   return true;
 };
 
-// Если в объявлении есть хотя бы один из включенных из фильтра удобств -> показывает это объявлеие
-// Но мне нужно, чтобы все включенные удобства присутствовали в объявлении, поэтому так не подходит
-// Комментарий удалю, если все правильно
-
-// const isFeaturesSuitable = (advert) => {
-//   let featuresArray = [];
-//
-//   for (let i = 0; i < features.length; i++) {
-//     if (features[i].checked) {
-//       if (advert.offer.features && advert.offer.features.includes(features[i].value)) {
-//         // return true;
-//         featuresArray = [...featuresArray, features[i].value];
-//       }
-//     }
-//   }
-// };
-
 const wifiFeature = featuresFieldset.querySelector('#filter-wifi');
 const dishwasherFeature = featuresFieldset.querySelector('#filter-dishwasher');
 const parkingFeature = featuresFieldset.querySelector('#filter-parking');
