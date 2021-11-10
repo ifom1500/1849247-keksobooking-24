@@ -2,9 +2,9 @@ const ADVERTS_COUNT = 10;
 const ANY_VALUE = 'any';
 
 const PriceRanges = {
-  middle: [10000, 50000],
-  low: [0, 10000],
-  high: [50000, Infinity],
+  LOW: [0, 10000],
+  MIDDLE: [10000, 50000],
+  HIGH: [50000, Infinity],
 };
 
 const mapFilters = document.querySelector('.map__filters');
@@ -13,71 +13,105 @@ const priceSelect = mapFilters.querySelector('#housing-price');
 const roomsSelect = mapFilters.querySelector('#housing-rooms');
 const guestsSelect = mapFilters.querySelector('#housing-guests');
 const featuresFieldset = mapFilters.querySelector('#housing-features');
-const features = featuresFieldset.querySelectorAll('input');
 
-const getRank = (item) => {
-  let rank = 0;
+const isTypeSuitable = (advert) => {
+  if (typeSelect.value !== ANY_VALUE) {
+    return advert.offer.type === typeSelect.value;
+  }
 
-  for (let i = 0; i < features.length; i++) {
-    if (features[i].checked) {
-      if (item.offer.features && item.offer.features.includes(features[i].value)) {
-        rank += 1;
+  return true;
+};
+
+const isRoomsSuitable = (advert) => {
+  if (roomsSelect.value !== ANY_VALUE) {
+    return advert.offer.rooms.toString() === roomsSelect.value;
+  }
+
+  return true;
+};
+
+const isGuestsSuitable = (advert) => {
+  if (guestsSelect.value !== ANY_VALUE) {
+    return advert.offer.guests.toString() === guestsSelect.value;
+  }
+
+  return true;
+};
+
+const isPriceSuitable = (advert) => {
+  if (priceSelect.value !== ANY_VALUE) {
+    return advert.offer.price >= PriceRanges[priceSelect.value.toUpperCase()][0]
+      && advert.offer.price < PriceRanges[priceSelect.value.toUpperCase()][1];
+  }
+
+  return true;
+};
+
+// Если в объявлении есть хотя бы один из включенных из фильтра удобств -> показывает это объявлеие
+// Но мне нужно, чтобы все включенные удобства присутствовали в объявлении, поэтому так не подходит
+// Комментарий удалю, если все правильно
+
+// const isFeaturesSuitable = (advert) => {
+//   let featuresArray = [];
+//
+//   for (let i = 0; i < features.length; i++) {
+//     if (features[i].checked) {
+//       if (advert.offer.features && advert.offer.features.includes(features[i].value)) {
+//         // return true;
+//         featuresArray = [...featuresArray, features[i].value];
+//       }
+//     }
+//   }
+// };
+
+const wifiFeature = featuresFieldset.querySelector('#filter-wifi');
+const dishwasherFeature = featuresFieldset.querySelector('#filter-dishwasher');
+const parkingFeature = featuresFieldset.querySelector('#filter-parking');
+const washerFeature = featuresFieldset.querySelector('#filter-washer');
+const elevatorFeature = featuresFieldset.querySelector('#filter-elevator');
+const conditionerFeature = featuresFieldset.querySelector('#filter-conditioner');
+
+const isFeatureSuitable = (advert, featureName) => {
+  if (featureName.checked) {
+    return advert.offer.features && advert.offer.features.includes(featureName.value);
+  }
+  return true;
+};
+
+const isWifiSuitable = (advert) => isFeatureSuitable(advert, wifiFeature);
+const isDishwasherSuitable = (advert) => isFeatureSuitable(advert, dishwasherFeature);
+const isParkingSuitable = (advert) => isFeatureSuitable(advert, parkingFeature);
+const isWasherSuitable = (advert) => isFeatureSuitable(advert, washerFeature);
+const isElevatorSuitable = (advert) => isFeatureSuitable(advert, elevatorFeature);
+const isConditionerSuitable = (advert) => isFeatureSuitable(advert, conditionerFeature);
+
+
+const filters = [isTypeSuitable, isPriceSuitable, isRoomsSuitable, isGuestsSuitable, isWifiSuitable, isDishwasherSuitable, isParkingSuitable, isWasherSuitable, isElevatorSuitable, isConditionerSuitable];
+
+const isAdvertSuitable = (advert) => filters.every((filter) => filter(advert));
+
+const filterOffers = (offers) => {
+  let newOffers = [];
+
+  for (let i = 0; i < offers.length; i++) {
+    if (isAdvertSuitable(offers[i])) {
+      newOffers = [...newOffers, offers[i]];
+
+      if (newOffers.length > ADVERTS_COUNT - 1) {
+        return newOffers;
       }
     }
   }
 
-  return rank;
+  return newOffers;
 };
-
-const compareByRank = (advertA, advertB) => getRank(advertB) - getRank(advertA);
-
-const checkAdvert= (item) => {
-  let isTypeExist = true;
-  let isPriceExist = true;
-  let isRoomsExist = true;
-  let isGuestsExist = true;
-
-  if (typeSelect.value !== ANY_VALUE) {
-    isTypeExist = item.offer.type === typeSelect.value;
-  }
-
-  if (priceSelect.value !== ANY_VALUE) {
-    isPriceExist = item.offer.price >= PriceRanges[priceSelect.value][0]
-      && item.offer.price < PriceRanges[priceSelect.value][1];
-  }
-
-  if (roomsSelect.value !== ANY_VALUE) {
-    isRoomsExist = item.offer.rooms.toString() === roomsSelect.value;
-  }
-
-  if (guestsSelect.value !== ANY_VALUE) {
-    isGuestsExist = item.offer.guests.toString() === guestsSelect.value;
-  }
-
-  return isTypeExist && isPriceExist && isRoomsExist && isGuestsExist;
-};
-
-const filterOffers = (arr) => arr
-  .slice()
-  .filter((advert) => checkAdvert(advert))
-  .sort(compareByRank)
-  .slice(0, ADVERTS_COUNT);
 
 const setMapFiltersChange = (cb) => {
-  mapFilters.addEventListener('change', () => {
-    cb();
-  });
+  mapFilters.addEventListener('change', cb);
 };
 
 const resetMapFilter = () => {
-  typeSelect.value = ANY_VALUE;
-  priceSelect.value = ANY_VALUE;
-  roomsSelect.value = ANY_VALUE;
-  guestsSelect.value = ANY_VALUE;
-
-  for (let i = 0; i < features.length; i++) {
-    features[i].checked = false;
-  }
+  mapFilters.reset();
 };
 
 export {filterOffers, setMapFiltersChange, resetMapFilter};

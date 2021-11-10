@@ -74,7 +74,7 @@ const renderOffers = (offers, createPopup) => {
   newOffers.forEach((offer) => {
     createOfferMarker(offer)
       .addTo(layerGroup)
-      .bindPopup(() => createPopup(offer));
+      .bindPopup(createPopup(offer));
   });
 };
 
