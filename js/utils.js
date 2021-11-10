@@ -36,4 +36,13 @@ const renderGetDataError = () => {
   }, 3000);
 };
 
-export {setFormEnabled, isEscapeKey, renderGetDataError};
+const debounce = (callback, timeoutDelay = 500) => {
+  let timeoutId;
+
+  return (...rest) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
+  };
+};
+
+export {setFormEnabled, isEscapeKey, renderGetDataError, debounce};
