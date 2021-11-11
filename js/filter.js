@@ -14,25 +14,22 @@ const roomsSelect = mapFilters.querySelector('#housing-rooms');
 const guestsSelect = mapFilters.querySelector('#housing-guests');
 const featuresFieldset = mapFilters.querySelector('#housing-features');
 
-const isAnyValue = (selectedType) => {
-  if (selectedType.value === ANY_VALUE) {
-    return true;
-  }
-};
+const isAnyValue = (selectedType) => selectedType.value === ANY_VALUE;
 
 const isTypeSuitable = (advert) =>
   isAnyValue(typeSelect) || advert.offer.type === typeSelect.value;
 
 const isRoomsSuitable = (advert) =>
-  isAnyValue(roomsSelect) || advert.offer.rooms.toString() === roomsSelect.value;
+  isAnyValue(roomsSelect) || advert.offer.rooms === parseInt(roomsSelect.value, 10);
 
 const isGuestsSuitable = (advert) =>
-  isAnyValue(guestsSelect) || advert.offer.guests.toString() === guestsSelect.value;
+  isAnyValue(guestsSelect) || advert.offer.guests === parseInt(guestsSelect.value, 10);
 
-const isPriceSuitable = (advert) =>
-  isAnyValue(priceSelect) ||
-  (advert.offer.price >= PriceRanges[priceSelect.value.toUpperCase()][0] &&
-    advert.offer.price < PriceRanges[priceSelect.value.toUpperCase()][1]);
+const isPriceSuitable = (advert) => {
+  const priceValue = PriceRanges[priceSelect.value.toUpperCase()];
+
+  return isAnyValue(priceSelect) || (advert.offer.price >= priceValue[0] && advert.offer.price < priceValue[1]);
+};
 
 const wifiFeature = featuresFieldset.querySelector('#filter-wifi');
 const dishwasherFeature = featuresFieldset.querySelector('#filter-dishwasher');
@@ -56,7 +53,18 @@ const isElevatorSuitable = (advert) => isFeatureSuitable(advert, elevatorFeature
 const isConditionerSuitable = (advert) => isFeatureSuitable(advert, conditionerFeature);
 
 
-const filters = [isTypeSuitable, isPriceSuitable, isRoomsSuitable, isGuestsSuitable, isWifiSuitable, isDishwasherSuitable, isParkingSuitable, isWasherSuitable, isElevatorSuitable, isConditionerSuitable];
+const filters = [
+  isTypeSuitable,
+  isPriceSuitable,
+  isRoomsSuitable,
+  isGuestsSuitable,
+  isWifiSuitable,
+  isDishwasherSuitable,
+  isParkingSuitable,
+  isWasherSuitable,
+  isElevatorSuitable,
+  isConditionerSuitable,
+];
 
 const isAdvertSuitable = (advert) => filters.every((filter) => filter(advert));
 
