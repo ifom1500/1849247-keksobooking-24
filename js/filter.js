@@ -14,38 +14,25 @@ const roomsSelect = mapFilters.querySelector('#housing-rooms');
 const guestsSelect = mapFilters.querySelector('#housing-guests');
 const featuresFieldset = mapFilters.querySelector('#housing-features');
 
-const isTypeSuitable = (advert) => {
-  if (typeSelect.value !== ANY_VALUE) {
-    return advert.offer.type === typeSelect.value;
+const isAnyValue = (selectedType) => {
+  if (selectedType.value === ANY_VALUE) {
+    return true;
   }
-
-  return true;
 };
 
-const isRoomsSuitable = (advert) => {
-  if (roomsSelect.value !== ANY_VALUE) {
-    return advert.offer.rooms.toString() === roomsSelect.value;
-  }
+const isTypeSuitable = (advert) =>
+  isAnyValue(typeSelect) || advert.offer.type === typeSelect.value;
 
-  return true;
-};
+const isRoomsSuitable = (advert) =>
+  isAnyValue(roomsSelect) || advert.offer.rooms.toString() === roomsSelect.value;
 
-const isGuestsSuitable = (advert) => {
-  if (guestsSelect.value !== ANY_VALUE) {
-    return advert.offer.guests.toString() === guestsSelect.value;
-  }
+const isGuestsSuitable = (advert) =>
+  isAnyValue(guestsSelect) || advert.offer.guests.toString() === guestsSelect.value;
 
-  return true;
-};
-
-const isPriceSuitable = (advert) => {
-  if (priceSelect.value !== ANY_VALUE) {
-    return advert.offer.price >= PriceRanges[priceSelect.value.toUpperCase()][0]
-      && advert.offer.price < PriceRanges[priceSelect.value.toUpperCase()][1];
-  }
-
-  return true;
-};
+const isPriceSuitable = (advert) =>
+  isAnyValue(priceSelect) ||
+  (advert.offer.price >= PriceRanges[priceSelect.value.toUpperCase()][0] &&
+    advert.offer.price < PriceRanges[priceSelect.value.toUpperCase()][1]);
 
 const wifiFeature = featuresFieldset.querySelector('#filter-wifi');
 const dishwasherFeature = featuresFieldset.querySelector('#filter-dishwasher');
