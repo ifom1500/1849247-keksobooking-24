@@ -5,6 +5,7 @@ import {setMapFormEnabled} from './map.js';
 import {getData} from './api.js';
 import {debounce, renderGetDataError} from './utils.js';
 import {setMapFiltersChange} from './filter.js';
+import './form-pictures.js';
 
 const setPageEnabled = (enabled) => {
   setAdFormEnabled(enabled);

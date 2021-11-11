@@ -3,6 +3,7 @@ import {sendData} from './api.js';
 import {resetAddressPin, closeAddressPopup} from './map.js';
 import {renderSuccessPopup, renderErrorPopup} from './popup.js';
 import {resetMapFilter} from './filter.js';
+import {clearPictureContainers} from './form-pictures.js';
 
 const AD_FORM_DISABLED = 'ad-form--disabled';
 const MIN_TITLE_LENGTH = 30;
@@ -123,6 +124,7 @@ const resetMap = () => {
 const onAdFormReset = () => {
   resetMap();
   resetMapFilter();
+  clearPictureContainers();
 };
 
 titleInput.addEventListener('input', onTitleInputChange);
