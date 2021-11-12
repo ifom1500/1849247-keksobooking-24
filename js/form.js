@@ -9,6 +9,7 @@ const MIN_TITLE_LENGTH = 30;
 const MAX_TITLE_LENGTH = 100;
 const HUNDRED_ROOMS_VALUE = '100';
 const MAX_PRICE_VALUE = 1000000;
+const IMAGE_FILE_TYPES = ['jpg', 'jpeg', 'png'];
 
 const MinPrices = {
   bungalow: 0,
@@ -28,6 +29,10 @@ const timeFieldset = adForm.querySelector('.ad-form__element--time');
 const addressInput = adForm.querySelector('#address');
 const timeInInput = adForm.querySelector('#timein');
 const timeOutInput = adForm.querySelector('#timeout');
+const avatarFileChooser = adForm.querySelector('#avatar');
+const avatarPreview = adForm.querySelector('.ad-form-header__preview img');
+const imageFileChooser = adForm.querySelector('#images');
+const imageContainer = adForm.querySelector('.ad-form__photo');
 
 const setAdFormEnabled = (enabled) => setFormEnabled(adForm, enabled, AD_FORM_DISABLED);
 
@@ -120,9 +125,15 @@ const resetMap = () => {
   closeAddressPopup();
 };
 
+const clearPictureContainers = () => {
+  avatarPreview.src = 'img/muffin-grey.svg';
+  imageContainer.innerHTML = '';
+};
+
 const onAdFormReset = () => {
   resetMap();
   resetMapFilter();
+  clearPictureContainers();
 };
 
 titleInput.addEventListener('input', onTitleInputChange);
@@ -147,6 +158,38 @@ const setAdFormSubmit = (onSuccess) => {
 setAdFormSubmit(() => {
   adForm.reset();
   renderSuccessPopup();
+});
+
+const isEndingOnType = (fileName) => IMAGE_FILE_TYPES.some((item) => fileName.endsWith(item));
+
+const assignName = (chooser) => {
+  const file = chooser.files[0];
+
+  return [file, file.name.toLowerCase()];
+};
+
+avatarFileChooser.addEventListener('change', () => {
+  const [file, fileName] = assignName(avatarFileChooser);
+
+  if (isEndingOnType(fileName)) {
+    avatarPreview.src = URL.createObjectURL(file);
+  }
+});
+
+imageFileChooser.addEventListener('change', () => {
+  const [file, fileName] = assignName(imageFileChooser);
+
+  if (isEndingOnType(fileName)) {
+    if (imageContainer.children) {
+      imageContainer.innerHTML = '';
+    }
+
+    const image = document.createElement('img');
+    image.src = URL.createObjectURL(file);
+    image.style.maxWidth = '100%';
+    image.style.maxHeight = '100%';
+    imageContainer.append(image);
+  }
 });
 
 export {setAdFormEnabled, setAddressInputValue};

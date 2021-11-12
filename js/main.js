@@ -15,7 +15,7 @@ initMap(() => setPageEnabled(true));
 
 const onSuccessGetData = (adverts) => {
   renderOffers(adverts, createCard);
-  setMapFiltersChange(debounce(() => renderOffers(adverts, createCard), 100));
+  setMapFiltersChange(debounce(() => renderOffers(adverts, createCard)));
 };
 
 getData(onSuccessGetData, renderGetDataError);
