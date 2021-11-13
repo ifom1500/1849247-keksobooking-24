@@ -9,14 +9,15 @@ const MIN_TITLE_LENGTH = 30;
 const MAX_TITLE_LENGTH = 100;
 const HUNDRED_ROOMS_VALUE = '100';
 const MAX_PRICE_VALUE = 1000000;
+const DEFAULT_PRICE = '1000';
 const IMAGE_FILE_TYPES = ['jpg', 'jpeg', 'png'];
 
 const MinPrices = {
-  bungalow: 0,
-  flat: 1000,
-  hotel: 3000,
-  house: 5000,
-  palace: 10000,
+  BUNGALOW: 0,
+  FLAT: 1000,
+  HOTEL: 3000,
+  HOUSE: 5000,
+  PALACE: 10000,
 };
 
 const adForm = document.querySelector('.ad-form');
@@ -29,12 +30,18 @@ const timeFieldset = adForm.querySelector('.ad-form__element--time');
 const addressInput = adForm.querySelector('#address');
 const timeInInput = adForm.querySelector('#timein');
 const timeOutInput = adForm.querySelector('#timeout');
-const avatarFileChooser = adForm.querySelector('#avatar');
+
+const photoFileChooser = adForm.querySelector('.ad-form__input');
+const photoContainer = adForm.querySelector('.ad-form__photo-container');
+const photoPreview = adForm.querySelector('.ad-form__photo');
+const avatarFileChooser = adForm.querySelector('.ad-form-header__input');
 const avatarPreview = adForm.querySelector('.ad-form-header__preview img');
-const imageFileChooser = adForm.querySelector('#images');
-const imageContainer = adForm.querySelector('.ad-form__photo');
 
 const setAdFormEnabled = (enabled) => setFormEnabled(adForm, enabled, AD_FORM_DISABLED);
+
+const setAddressInputValue = (value) => addressInput.value = value;
+
+// Валидация полей
 
 const onTitleInputChange = (evt) => {
   const input = evt.target;
@@ -65,7 +72,7 @@ const syncRoomCapacity = (value) => {
 
     if (currentValue === HUNDRED_ROOMS_VALUE) {
       capacities[i].disabled = true;
-      capacityNoGuests.disabled = true;
+      capacityNoGuests.disabled = false;
       capacityNoGuests.selected = true;
     } else if (capacities[i].value <= currentValue) {
       capacities[i].disabled = false;
@@ -82,7 +89,7 @@ const onRoomSelectChange = (evt) => syncRoomCapacity(evt.target.value);
 
 const getMinPrice = (currentValue) => {
   for (const type in MinPrices) {
-    if (currentValue === type) {
+    if (currentValue === type.toLowerCase()) {
       return MinPrices[type];
     }
   }
@@ -120,76 +127,100 @@ const onTimeFieldsetChange = (evt) => {
   timeOutInput.value = newValue;
 };
 
-const resetMap = () => {
-  resetAddressPin();
-  closeAddressPopup();
-};
-
-const clearPictureContainers = () => {
-  avatarPreview.src = 'img/muffin-grey.svg';
-  imageContainer.innerHTML = '';
-};
-
-const onAdFormReset = () => {
-  resetMap();
-  resetMapFilter();
-  clearPictureContainers();
-};
-
 titleInput.addEventListener('input', onTitleInputChange);
 roomSelect.addEventListener('change', onRoomSelectChange);
 priceInput.addEventListener('input', onPriceInputChange);
 typeSelect.addEventListener('change', onTypeSelectChange);
 timeFieldset.addEventListener('change', onTimeFieldsetChange);
+
+// Сброс полей до исходного состояния
+
+const resetMap = () => {
+  resetAddressPin();
+  closeAddressPopup();
+};
+
+const clearPhotoContainer = () => {
+  photoContainer.querySelectorAll('.ad-form__photo')
+    .forEach((photoItem) => photoItem.remove());
+};
+
+const clearPictureContainers = () => {
+  avatarPreview.src = 'img/muffin-grey.svg';
+  clearPhotoContainer();
+  photoContainer.append(photoPreview);
+};
+
+const resetDefaultPlaceholder = (input, defaultValue) => {
+  input.placeholder = defaultValue;
+};
+
+const onAdFormReset = () => {
+  resetDefaultPlaceholder(priceInput, DEFAULT_PRICE);
+  resetMap();
+  resetMapFilter();
+  clearPictureContainers();
+};
+
+const resetAdForm = () => {
+  adForm.reset();
+  resetDefaultPlaceholder(priceInput, DEFAULT_PRICE);
+};
+
 adForm.addEventListener('reset', onAdFormReset);
 
-const setAddressInputValue = (value) => {
-  addressInput.value = value;
-};
+// Обработка публикации объявления
 
 const setAdFormSubmit = (onSuccess) => {
   adForm.addEventListener('submit', (evt) => {
     evt.preventDefault();
-
     sendData (onSuccess, renderErrorPopup, new FormData(evt.target));
   });
 };
 
 setAdFormSubmit(() => {
-  adForm.reset();
+  resetAdForm();
   renderSuccessPopup();
 });
 
-const isEndingOnType = (fileName) => IMAGE_FILE_TYPES.some((item) => fileName.endsWith(item));
+// Обработка полей для загрузки изображений
 
-const assignName = (chooser) => {
-  const file = chooser.files[0];
-
-  return [file, file.name.toLowerCase()];
-};
+const isEndingOnType = (fileName) =>
+  IMAGE_FILE_TYPES.some((item) => fileName.endsWith(item));
 
 avatarFileChooser.addEventListener('change', () => {
-  const [file, fileName] = assignName(avatarFileChooser);
+  const file = avatarFileChooser.files[0];
+  const fileName = file.name.toLowerCase();
 
   if (isEndingOnType(fileName)) {
     avatarPreview.src = URL.createObjectURL(file);
   }
 });
 
-imageFileChooser.addEventListener('change', () => {
-  const [file, fileName] = assignName(imageFileChooser);
+photoFileChooser.addEventListener('change', () => {
+  const files = photoFileChooser.files;
 
-  if (isEndingOnType(fileName)) {
-    if (imageContainer.children) {
-      imageContainer.innerHTML = '';
+  clearPhotoContainer();
+
+  const fragment = document.createDocumentFragment();
+
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    const fileName = file.name.toLowerCase();
+
+    if (isEndingOnType(fileName)) {
+
+      const newPhotoPreview = photoPreview.cloneNode(false);
+      const image = document.createElement('img');
+      image.src = URL.createObjectURL(file);
+      image.style.maxWidth = '100%';
+      image.style.maxHeight = '100%';
+      newPhotoPreview.append(image);
+      fragment.append(newPhotoPreview);
     }
-
-    const image = document.createElement('img');
-    image.src = URL.createObjectURL(file);
-    image.style.maxWidth = '100%';
-    image.style.maxHeight = '100%';
-    imageContainer.append(image);
   }
+
+  photoContainer.append(fragment);
 });
 
 export {setAdFormEnabled, setAddressInputValue};

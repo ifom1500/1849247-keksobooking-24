@@ -1,9 +1,9 @@
 const TypeTranslation = {
-  flat: 'Квартира',
-  bungalow: 'Бунгало',
-  house: 'Дом',
-  palace: 'Дворец',
-  hotel: 'Отель',
+  FLAT: 'Квартира',
+  BUNGALOW: 'Бунгало',
+  HOUSE: 'Дом',
+  PALACE: 'Дворец',
+  HOTEL: 'Отель',
 };
 
 const cardTemplate = document.querySelector('#card')
@@ -46,7 +46,7 @@ const createCard = (offerItem) => {
 
   addContentToElement(cardPrice, price ? `${price} ₽/ночь` : null);
 
-  addContentToElement(cardType, TypeTranslation[type]);
+  addContentToElement(cardType, TypeTranslation[type.toUpperCase()]);
 
   if (rooms && guests) {
     cardCapacity.textContent = `${rooms} комнаты для ${guests} гостей`;

@@ -84,8 +84,8 @@ const filterOffers = (offers) => {
   return newOffers;
 };
 
-const setMapFiltersChange = (cb) => {
-  mapFilters.addEventListener('change', cb);
+const setMapFiltersChange = (onMapFiltersChange) => {
+  mapFilters.addEventListener('change', onMapFiltersChange);
 };
 
 const resetMapFilter = () => {
