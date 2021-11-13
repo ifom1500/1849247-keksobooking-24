@@ -19,7 +19,22 @@ const addContentToElement = (element, content) => {
 };
 
 const createCard = (offerItem) => {
-  const { author: { avatar }, offer: { title, address, price, type, rooms, guests, checkin, checkout, features, description, photos } } = offerItem;
+  const {
+    author: {avatar},
+    offer: {
+      title,
+      address,
+      price,
+      type,
+      rooms,
+      guests,
+      checkin,
+      checkout,
+      features,
+      description,
+      photos,
+    },
+  } = offerItem;
 
   const card = cardTemplate.cloneNode(true);
 

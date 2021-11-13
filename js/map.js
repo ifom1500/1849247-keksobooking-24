@@ -46,7 +46,7 @@ const initMap = (onMapLoad) => {
   });
 
   map.setView(TOKYO_COORDINATES, ZOOM)
-    .on('load', onMapLoad);
+    .on('load', onMapLoad());
 
   L.tileLayer(
     'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',

@@ -1,7 +1,7 @@
 import {setFormEnabled} from './utils.js';
 import {sendData} from './api.js';
 import {resetAddressPin, closeAddressPopup} from './map.js';
-import {renderSuccessPopup, renderErrorPopup} from './popup.js';
+import {renderErrorPopup, renderSuccessPopup} from './popup.js';
 import {resetMapFilter} from './filter.js';
 
 const AD_FORM_DISABLED = 'ad-form--disabled';
@@ -97,7 +97,7 @@ const getMinPrice = (currentValue) => {
 
 const setMinPrice = (offerType) => {
   const minPrice = getMinPrice(offerType);
-  priceInput.setAttribute('min', minPrice);
+  priceInput.min = minPrice;
   priceInput.placeholder = minPrice;
 };
 
@@ -133,7 +133,7 @@ priceInput.addEventListener('input', onPriceInputChange);
 typeSelect.addEventListener('change', onTypeSelectChange);
 timeFieldset.addEventListener('change', onTimeFieldsetChange);
 
-// Сброс полей до исходного состояния
+// Сброс страницы до исходного состояния
 
 const resetMap = () => {
   resetAddressPin();
@@ -151,37 +151,39 @@ const clearPictureContainers = () => {
   photoContainer.append(photoPreview);
 };
 
-const resetDefaultPlaceholder = (input, defaultValue) => {
+const resetDefaultInputValue = (input, defaultValue) => {
   input.placeholder = defaultValue;
-};
-
-const onAdFormReset = () => {
-  resetDefaultPlaceholder(priceInput, DEFAULT_PRICE);
-  resetMap();
-  resetMapFilter();
-  clearPictureContainers();
+  input.min = defaultValue;
 };
 
 const resetAdForm = () => {
   adForm.reset();
-  resetDefaultPlaceholder(priceInput, DEFAULT_PRICE);
+  resetDefaultInputValue(priceInput, DEFAULT_PRICE);
 };
 
-adForm.addEventListener('reset', onAdFormReset);
+const setAdFormReset = (onAdFormReset) => {
+  adForm.addEventListener('reset', () => {
+    resetDefaultInputValue(priceInput, DEFAULT_PRICE);
+    resetMap();
+    resetMapFilter();
+    clearPictureContainers();
+    onAdFormReset();
+  });
+};
 
 // Обработка публикации объявления
 
 const setAdFormSubmit = (onSuccess) => {
   adForm.addEventListener('submit', (evt) => {
     evt.preventDefault();
-    sendData (onSuccess, renderErrorPopup, new FormData(evt.target));
+    sendData (
+      () => {
+        resetAdForm();
+        renderSuccessPopup();
+        onSuccess();
+      }, renderErrorPopup, new FormData(evt.target));
   });
 };
-
-setAdFormSubmit(() => {
-  resetAdForm();
-  renderSuccessPopup();
-});
 
 // Обработка полей для загрузки изображений
 
@@ -190,9 +192,8 @@ const isEndingOnType = (fileName) =>
 
 avatarFileChooser.addEventListener('change', () => {
   const file = avatarFileChooser.files[0];
-  const fileName = file.name.toLowerCase();
 
-  if (isEndingOnType(fileName)) {
+  if (isEndingOnType(file.name.toLowerCase())) {
     avatarPreview.src = URL.createObjectURL(file);
   }
 });
@@ -206,9 +207,8 @@ photoFileChooser.addEventListener('change', () => {
 
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
-    const fileName = file.name.toLowerCase();
 
-    if (isEndingOnType(fileName)) {
+    if (isEndingOnType(file.name.toLowerCase())) {
 
       const newPhotoPreview = photoPreview.cloneNode(false);
       const image = document.createElement('img');
@@ -223,4 +223,4 @@ photoFileChooser.addEventListener('change', () => {
   photoContainer.append(fragment);
 });
 
-export {setAdFormEnabled, setAddressInputValue};
+export {setAdFormEnabled, setAddressInputValue, setAdFormSubmit, setAdFormReset, resetAdForm};
