@@ -45,8 +45,9 @@ const initMap = (onMapLoad) => {
     setAddressInputValue(`${evt.target.getLatLng().lat.toFixed(5)}, ${evt.target.getLatLng().lng.toFixed(5)}`);
   });
 
-  map.setView(TOKYO_COORDINATES, ZOOM)
-    .on('load', onMapLoad());
+  map
+    .on('load', onMapLoad)
+    .setView(TOKYO_COORDINATES, ZOOM);
 
   L.tileLayer(
     'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',

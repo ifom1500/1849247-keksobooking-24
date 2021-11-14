@@ -161,19 +161,7 @@ const resetAdForm = () => {
   resetDefaultInputValue(priceInput, DEFAULT_PRICE);
 };
 
-const setAdFormReset = (onAdFormReset) => {
-  adForm.addEventListener('reset', () => {
-    resetDefaultInputValue(priceInput, DEFAULT_PRICE);
-    resetMap();
-    resetMapFilter();
-    clearPictureContainers();
-    onAdFormReset();
-  });
-};
-
-// Обработка публикации объявления
-
-const setAdFormSubmit = (onSuccess) => {
+const setAdFormListener = (onSuccess) => {
   adForm.addEventListener('submit', (evt) => {
     evt.preventDefault();
     sendData (
@@ -183,17 +171,25 @@ const setAdFormSubmit = (onSuccess) => {
         onSuccess();
       }, renderErrorPopup, new FormData(evt.target));
   });
+
+  adForm.addEventListener('reset', () => {
+    resetDefaultInputValue(priceInput, DEFAULT_PRICE);
+    resetMap();
+    resetMapFilter();
+    clearPictureContainers();
+    onSuccess();
+  });
 };
 
 // Обработка полей для загрузки изображений
 
-const isEndingOnType = (fileName) =>
+const isImageFile = (fileName) =>
   IMAGE_FILE_TYPES.some((item) => fileName.endsWith(item));
 
 avatarFileChooser.addEventListener('change', () => {
   const file = avatarFileChooser.files[0];
 
-  if (isEndingOnType(file.name.toLowerCase())) {
+  if (isImageFile(file.name.toLowerCase())) {
     avatarPreview.src = URL.createObjectURL(file);
   }
 });
@@ -208,7 +204,7 @@ photoFileChooser.addEventListener('change', () => {
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
 
-    if (isEndingOnType(file.name.toLowerCase())) {
+    if (isImageFile(file.name.toLowerCase())) {
 
       const newPhotoPreview = photoPreview.cloneNode(false);
       const image = document.createElement('img');
@@ -223,4 +219,4 @@ photoFileChooser.addEventListener('change', () => {
   photoContainer.append(fragment);
 });
 
-export {setAdFormEnabled, setAddressInputValue, setAdFormSubmit, setAdFormReset, resetAdForm};
+export {setAdFormEnabled, setAddressInputValue, setAdFormListener, resetAdForm};
