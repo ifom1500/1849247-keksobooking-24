@@ -3,7 +3,7 @@ import {setAddressInputValue} from './form.js';
 import {filterOffers} from './filter.js';
 
 const AD_FORM_DISABLED = 'map__filters--disabled';
-const TOKYO_COORDINATES = {lat: 35.67500, lng: 139.75000};
+const CITY_COORDINATES = {lat: 35.67500, lng: 139.75000};
 const ZOOM = 13;
 
 const mapFilterForm = document.querySelector('.map__filters');
@@ -27,8 +27,8 @@ const pinIcon = L.icon({
 
 const mainPin = L.marker(
   {
-    lat: TOKYO_COORDINATES.lat,
-    lng: TOKYO_COORDINATES.lng,
+    lat: CITY_COORDINATES.lat,
+    lng: CITY_COORDINATES.lng,
   },
   {
     draggable: true,
@@ -47,7 +47,7 @@ const initMap = (onMapLoad) => {
 
   map
     .on('load', onMapLoad)
-    .setView(TOKYO_COORDINATES, ZOOM);
+    .setView(CITY_COORDINATES, ZOOM);
 
   L.tileLayer(
     'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -80,8 +80,8 @@ const renderOffers = (offers, createPopup) => {
 };
 
 const resetAddressPin = () => {
-  mainPin.setLatLng(TOKYO_COORDINATES);
-  map.setView(TOKYO_COORDINATES, ZOOM);
+  mainPin.setLatLng(CITY_COORDINATES);
+  map.setView(CITY_COORDINATES, ZOOM);
 };
 
 const closeAddressPopup = () => {

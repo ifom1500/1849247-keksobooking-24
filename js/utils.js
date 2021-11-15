@@ -1,3 +1,5 @@
+const ERROR_SHOW_TIME = 3000;
+
 const setFormEnabled = (form, enabled, disabledClass) => {
   if (enabled) {
     form.classList.remove(disabledClass);
@@ -33,7 +35,7 @@ const renderGetDataError = () => {
 
   setTimeout(() => {
     getDataErrorPopup.remove();
-  }, 3000);
+  }, ERROR_SHOW_TIME);
 };
 
 const debounce = (callback, timeoutDelay = 500) => {
